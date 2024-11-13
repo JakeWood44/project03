@@ -63,22 +63,24 @@ def apply(operator, operands):
     raise TypeError("unknown operator")
 
 def eval(syntax_tree):
-    if isinstance(syntax_tree, int) or isinstance(syntax_tree, float):
+    if isinstance(syntax_tree, int) or isinstance(syntax_tree, float) or syntax_tree == nil:
         return syntax_tree
 
     if isinstance(syntax_tree, Pair):
-        op = syntax_tree.first
+        if isinstance(syntax_tree.first, int) or isinstance(syntax_tree.first, float):
+            return Pair(syntax_tree.first, eval(syntax_tree.rest))
 
-        ops = eval(syntax_tree.rest.first)
+        if isinstance(syntax_tree.first, Pair):
+            return Pair(eval(syntax_tree.first), eval(syntax_tree.rest))
 
-        value = apply(op, ops)
+        if isinstance(syntax_tree.first, str):
+            return apply(syntax_tree.first, eval(syntax_tree.rest))
 
-        return value
-
+    print(syntax_tree, type(syntax_tree))
     raise TypeError("Not a pair or primitive")
 
 def main():
-    print("Welcome to the CS 111 Calculator Interpreter.\n")
+    print("Welcome to the CS 111 Calculator Interpreter.")
 
     while True:
         expression = input("calc >> ")
